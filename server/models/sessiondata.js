@@ -16,15 +16,11 @@ const sessionschema= new mongoose.Schema({
      type:String,
     required:true
   },
-  uers:[
+  users:[
     {
-      type:String,
+       type: String,
     }
   ]
-},
-{
-  collection: "sessions"
-}
-);
+});
 
 module.exports=mongoose.model("Session",sessionschema);
