@@ -16,6 +16,11 @@ const sessionschema= new mongoose.Schema({
      type:String,
     required:true
   },
+  uers:[
+    {
+      type:String,
+    }
+  ]
 },
 {
   collection: "sessions"

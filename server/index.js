@@ -10,8 +10,10 @@ mongoose.connection.on('error',(error)=>{
   console.log("error "+error);
 })
 require('./models/sessiondata');
+require('./models/user');
 app.use(express.json());
 app.use(require('./routes/session'));
+app.use(require('./routes/auth'))
 app.listen(port,()=>{
   console.log("server has started");
 })

@@ -11,7 +11,7 @@ router.post('/createsession',(req,res)=>{
   const session =new Session({
     createdBy,
     sessionName,
-    description
+    description,
   })
   session.save().then(result=>{
     res.json({post:result})
