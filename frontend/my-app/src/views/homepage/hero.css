@@ -1,0 +1,91 @@
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 50px 80px;
+  background: #f9fafc;
+}
+
+/* LEFT SIDE */
+.hero-text {
+  max-width: 520px;
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #eef2ff;
+  color: #4f46e5;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 17px;
+  margin-bottom: 20px;
+}
+
+/* Heading */
+.hero-text h1 {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #111827;
+  margin-bottom: 20px;
+}
+
+.highlight {
+  color: #4f46e5;
+}
+
+/* Paragraph */
+.hero-text p {
+  font-size: 16px;
+  color: #6b7280;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+/* Buttons */
+.buttons {
+  display: flex;
+  gap: 15px;
+}
+
+/* Primary button */
+.primary {
+  background: #4f46e5;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Secondary button */
+.secondary {
+  background: transparent;
+  color: #4f46e5;
+  border: 1px solid #4f46e5;
+  padding: 12px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Image */
+.hero-image img {
+  width: 550px;
+  margin-top: 20px;
+}
+
+/* Hover effects */
+.primary:hover {
+  background: #5b4ee9;
+  scale: 1.1;
+}
+
+.secondary:hover {
+  background: whitesmoke;
+  scale: 1.1;
+}
