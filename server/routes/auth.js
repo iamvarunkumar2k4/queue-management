@@ -3,6 +3,9 @@ const bcrypt=require('bcrypt');
 const exprress=require('express');
 const router=exprress.Router();
 const User=mongoose.model('User');
+const jwt=require('jsonwebtoken');
+const {JWT_SECRET}=require('./key');
+
 
 router.post('/signup',(req,res)=>{
   const {name,email,password}=req.body;
@@ -12,7 +15,7 @@ router.post('/signup',(req,res)=>{
   }
   User.findOne({email:email}).then((saveduser)=>{
     if(saveduser){
-      res.status(422).json({error:"user already existed"});
+      return res.status(422).json({error:"user already existed"});
     }
     bcrypt.hash(password,12)
     .then(hashedpassword=>{
@@ -23,7 +26,7 @@ router.post('/signup',(req,res)=>{
         password:hashedpassword.toString()
       })
       user.save().then(user=>{
-      res.json({message:"saved successfully"})
+      return res.json({message:"saved successfully"})
       })
       .catch(error=>{
         console.log(error);
@@ -31,6 +34,8 @@ router.post('/signup',(req,res)=>{
     })
     .catch(error=>{
       console.log(error);
+      return res.status(500).json({
+    error:"Something went wrong"})
     })
   })
 })
@@ -51,8 +56,9 @@ router.post('/signin',(req,res)=>{
     .then(domatch=>{
       if(domatch)
       {
+        const token = jwt.sign({_id:saveduser._id}, JWT_SECRET, {expiresIn:'2d'});
         const {_id,name,email}=saveduser;
-        res.json({user:{_id,name,email}});
+        return res.json({ token,user:{_id,name,email}});
       }
       else
       {
@@ -61,6 +67,8 @@ router.post('/signin',(req,res)=>{
     })
     .catch(error=>{
       console.log(error);
+      return res.status(500).json({
+    error:"Something went wrong"})
     })
   })
 })
