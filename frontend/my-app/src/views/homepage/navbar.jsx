@@ -1,6 +1,10 @@
 import React from "react";
 import './nabar.css';
 import user from '../../assets/user.png';
+import login from '../../';
+import { Link } from "react-router-dom";
+
+
 function Navbar() {
   return (
     <div className="navbar">
@@ -10,14 +14,14 @@ function Navbar() {
       </div>
 
       <div className="center">
-        <a className="active" href="#">Home</a>
-        <a href="#">Features</a>
-        <a href="#">How It Works</a>
-        <a href="#">Benefits</a>
-        <a href="#">Contact</a>
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+        <Link to="/features">Features</Link>
+        <Link to="/how-it-works">How It Works</Link>
+        <Link to="/contacts">Contacts</Link>
       </div>
 
-      <button className="btn">Get Started</button>
+      <Link to={"/login"}><button className="btn">Get Started</button></Link>
     </div>
   );
 }
