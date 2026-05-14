@@ -9,7 +9,6 @@ function Create(){
   const [sessionName,setsessionName]=useState("");
   const [description,setdescription]=useState("");
   const navigate=useNavigate();
-
    const handlea=(e)=>{
     setcreatedBy(e.target.value);
   }
@@ -31,6 +30,9 @@ function Create(){
     axios.post('http://localhost:8244/createsession',data)
     .then(res=>{
       console.log(res.data);
+      const id_session=res.data.post._id;
+      console.log(id_session);
+      navigate('/next',{state:{id_session:id_session}});
     })
     .catch(err=>{
       console.log(err);

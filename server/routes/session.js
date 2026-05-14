@@ -2,6 +2,7 @@ const express=require('express');
 const { default: mongoose } = require('mongoose');
 const router=express.Router();
 const Session=mongoose.model("Session")
+const requireLogin=require('../middleware/requiredLogin');
 router.post('/createsession',(req,res)=>{
   try
   {
@@ -28,6 +29,7 @@ router.post('/createsession',(req,res)=>{
 });
 router.post('/joinsession', async (req, res) => {
   try {
+    console.log(req.body);
     const { id_user, id_session } = req.body;
 
     if (!id_user || !id_session) {
@@ -39,10 +41,11 @@ router.post('/joinsession', async (req, res) => {
     if (!match) {
       return res.status(404).json({ error: "Session not found" });
     }
+    if (match.users.includes(id_user)) {
+      return res.status(400).json({ msg: "Already joined" });
+    }
     match.users.push(id_user);
-
     await match.save();
-
     return res.status(200).json({ message: "Joined successfully", data: match });
 
   } catch (err) {
@@ -65,9 +68,9 @@ router.post('/next', async (req, res) => {
       return res.status(404).json({ error: "Session not found" });
     }
     match.users.shift();
-
     await match.save();
-
+    const io = req.app.get("io");
+    io.to(id_session).emit("data",match.users);
     return res.status(200).json({ message: "user deleted", data: match });
 
   } catch (err) {

@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import style from './join.module.css';
 import { Link } from "react-router-dom";
+import socket from "../socket";
 function Join(){
   const [userid,setuserid]=useState("");
   const [sessionid,setsessionid]=useState("");
@@ -26,6 +27,7 @@ function Join(){
     axios.post('http://localhost:8244/joinsession',data)
     .then(res=>{
       console.log(res.data);
+      socket.emit("join_session",res.data.data._id);
       navigate('/position',{state:{id_user:userid,id_session:sessionid}})
     })
     .catch(err=>{
