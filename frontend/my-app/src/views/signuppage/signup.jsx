@@ -3,11 +3,12 @@ import group from "../../assets/line.png";
 import axios from 'axios';
 import style from './signup.module.css';
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-
+  const navigate=useNavigate();
   const handleName=(e)=>{
     setName(e.target.value);
   }
@@ -30,6 +31,7 @@ function Signin() {
     axios.post('http://localhost:8244/signup',data)
     .then(res=>{
       console.log(res.data);
+      navigate('/Login');
     })
     .catch(err=>{
       console.log(err);

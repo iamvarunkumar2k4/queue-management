@@ -3,9 +3,10 @@ import group from "../../assets/line.png";
 import axios from 'axios';
 import style from './login.module.css';
 import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -32,7 +33,8 @@ function Login() {
     axios.post('http://localhost:8244/signin',data)
     .then(res=>{
       localStorage.setItem("token", res.data.token);
-      console.log(res.data);
+      localStorage.setItem("userid",res.data.user._id);
+      navigate('/you',{replace:true});
     })
     .catch(err=>{
       console.log(err);
