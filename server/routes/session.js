@@ -2,27 +2,41 @@ const express=require('express');
 const { default: mongoose } = require('mongoose');
 const router=express.Router();
 const Session=mongoose.model("Session")
+const User=mongoose.model('User');
+const QRCode = require('qrcode');
 const requireLogin=require('../middleware/requiredLogin');
-router.post('/createsession',(req,res)=>{
-  try
-  {
-    const {createdBy,sessionName,description}=req.body;
-    if(!sessionName || !description || !createdBy)
-    {
-      return res.status(422).json({error:"please add all fields"});
+const abc=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 
+  'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z','A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 
+  'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+  
+router.post('/createsession', async (req, res) => {
+  try {
+    const { createdBy, sessionName, description } = req.body;
+    if (!sessionName || !description || !createdBy) {
+      return res.status(422).json({ error: "please add all fields" });
     }
-    const session =new Session({
+    let shortName = "";
+    let match;
+    do {
+      shortName = ""; 
+      for (let i = 0; i < 5; i++) {
+        let x = Math.floor(Math.random() * 52); 
+        shortName += abc[x];
+      }
+      match = await Session.findOne({ shortName }); 
+    } while (match); 
+    const session = new Session({
       createdBy,
       sessionName,
       description,
-    })
-    session.save().then(result=>{
-      res.json({post:result})
-    }).catch(error=>{
-      console.log(error);
-    })
-  }
-  catch (err) {
+      shortName
+    });
+    const result = await session.save();
+    const url = 'http://localhost:3000/joinsession?shortName='+shortName;
+    const qrCode = await QRCode.toDataURL(url);
+    console.log(qrCode);
+    res.json({ post: result ,qrcode:qrCode});
+  } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Server error" });
   }
@@ -30,14 +44,14 @@ router.post('/createsession',(req,res)=>{
 router.post('/joinsession', async (req, res) => {
   try {
     console.log(req.body);
-    const { id_user, id_session } = req.body;
+    const { id_user,shortName} = req.body;
 
-    if (!id_user || !id_session) {
+    if (!id_user || !shortName) {
       return res.status(422).json({ error: "please add all fields" });
     }
 
-    const match = await Session.findById(id_session);
-
+    const match = await Session.findOne({shortName:shortName});
+    const u=await User.findById(id_user);
     if (!match) {
       return res.status(404).json({ error: "Session not found" });
     }
@@ -45,7 +59,9 @@ router.post('/joinsession', async (req, res) => {
       return res.status(400).json({ msg: "Already joined" });
     }
     match.users.push(id_user);
+    u.joined.push(shortName);
     await match.save();
+    await u.save();
     return res.status(200).json({ message: "Joined successfully", data: match });
 
   } catch (err) {
@@ -56,13 +72,13 @@ router.post('/joinsession', async (req, res) => {
 
 router.post('/next', async (req, res) => {
   try {
-    const {id_session } = req.body;
+    const {shortName } = req.body;
 
-    if (!id_session) {
+    if (!shortName) {
       return res.status(422).json({ error: "please add all fields" });
     }
 
-    const match = await Session.findById(id_session);
+    const match = await Session.findOne({shortName:shortName});
 
     if (!match) {
       return res.status(404).json({ error: "Session not found" });
@@ -70,7 +86,7 @@ router.post('/next', async (req, res) => {
     match.users.shift();
     await match.save();
     const io = req.app.get("io");
-    io.to(id_session).emit("data",match.users);
+    io.to(shortName).emit("data",match.users);
     return res.status(200).json({ message: "user deleted", data: match });
 
   } catch (err) {
@@ -81,13 +97,13 @@ router.post('/next', async (req, res) => {
 
 router.post('/myposition',async (req,res)=>{
   try {
-    const { id_user, id_session } = req.body;
+    const { id_user, shortName } = req.body;
 
-    if (!id_user || !id_session) {
+    if (!id_user || !shortName) {
       return res.status(422).json({ error: "please add all fields" });
     }
 
-    const match = await Session.findById(id_session);
+    const match = await Session.findOne({shortName:shortName});
 
     if (!match) {
       return res.status(404).json({ error: "Session not found" });
@@ -99,5 +115,24 @@ router.post('/myposition',async (req,res)=>{
     console.error(err);
     return res.status(500).json({ error: "Server error" });
   }
+})
+router.post('/profile',async (req,res)=>{
+  try{
+  const {id_user}=req.body;
+  const match=User.findById(id_user);
+  if(!match)
+  {
+    return res.status(404).json({"message":"no user found"});
+  }
+  else
+  {
+    return res.status(200).send(match);
+  }
+  }
+  catch(err){
+    return res.status(500).json({error:"something went wrong"});
+    console.log(err);
+  }
+
 })
 module.exports=router;
