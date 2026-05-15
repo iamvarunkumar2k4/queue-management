@@ -10,7 +10,7 @@ import { AppContext } from "../../Appcontext";
 import { useEffect } from "react";
 function Join(){
   const [name,setname]=useState("");
-  const { setSession ,user} = useContext(AppContext);
+  const { setSession ,user,session} = useContext(AppContext);
 
   const navigate=useNavigate();
    const handleb=(e)=>{
@@ -39,7 +39,8 @@ function Join(){
 
    }
   return (
-    <div className="style.main">
+    <div>{session?"cannot join another session till the is over"
+      : <div className="style.main">
       <form onSubmit={handleSubmit}>
         <label>Enter Session Code</label>
         <input
@@ -53,6 +54,8 @@ function Join(){
         <br />
       </form>
     </div>
+    }</div>
+   
   );
 }
 export default Join;

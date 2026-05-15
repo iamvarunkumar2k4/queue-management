@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { AppContext } from "../../Appcontext";
 function Position(){
     const location = useLocation();
-    const { user, session } = useContext(AppContext);
+    const { user, session,setSession} = useContext(AppContext);
     console.log(user+" "+session);
     let [position,setpostion]=useState('loading');
     useEffect(()=>{
@@ -33,9 +33,19 @@ function Position(){
         socket.on("data",(data)=>{
           console.log(data)
           setpostion(data.indexOf(user)+1);
+          if(data.indexOf(user)===-1)
+          {
+            setSession(null);
+          }
         })
       }
     },[user,session])
-     return <div>You are currently at {position}</div>;
+    return (
+  <div>
+    {!session
+      ? "No session joined"
+      : `You are currently at ${position}`}
+  </div>
+);
 }
 export default Position;
