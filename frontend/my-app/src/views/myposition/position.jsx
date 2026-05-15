@@ -3,15 +3,25 @@ import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import socket from "../socket";
+import { useContext } from "react";
+import { AppContext } from "../../Appcontext";
 function Position(){
     const location = useLocation();
+    const { user, session } = useContext(AppContext);
+    console.log(user+" "+session);
     let [position,setpostion]=useState('loading');
-    const id=location.state.id_user;
-    const data={
-      id_user:location.state.id_user,
-      id_session:location.state.id_session
-    }
     useEffect(()=>{
+      if(!user && !session)
+      {
+        return;
+      }
+      else
+        {
+      const data={
+        id_user:user,
+        shortName:session
+      }
+      console.log(data);
       axios.post('http://localhost:8244/myposition',data)
         .then(res=>{
           console.log(res.data);
@@ -22,9 +32,10 @@ function Position(){
         })
         socket.on("data",(data)=>{
           console.log(data)
-          setpostion(data.indexOf(id));
+          setpostion(data.indexOf(user)+1);
         })
-    },[])
-     return <div>You are currently at {position+1}</div>;
+      }
+    },[user,session])
+     return <div>You are currently at {position}</div>;
 }
 export default Position;

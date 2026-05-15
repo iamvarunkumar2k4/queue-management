@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import group from "../../assets/line.png";
 import axios from 'axios';
 import style from './login.module.css';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AppContext } from "../../Appcontext";
 
 function Login() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ function Login() {
   const handlePassword = (e) => {
     setPassword(e.target.value);
   };
-
+  const { setUser } = useContext(AppContext);
   const handleSubmit = (e) => {
     e.preventDefault();
     const data={
@@ -33,8 +34,11 @@ function Login() {
     axios.post('http://localhost:8244/signin',data)
     .then(res=>{
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userid",res.data.user._id);
-      navigate('/you',{replace:true});
+      const userData=res.data.user._id;
+      console.log(userData);
+      localStorage.setItem("userid",userData);
+      setUser(userData);
+      navigate('/profile',{replace:true});
     })
     .catch(err=>{
       console.log(err);
