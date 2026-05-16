@@ -4,10 +4,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import style from './create.module.css';
 import { Link } from "react-router-dom";
+import { AppContext } from "../../Appcontext";
+import { useContext } from "react";
 function Create(){
   const [createdBy,setcreatedBy]=useState("");
   const [sessionName,setsessionName]=useState("");
   const [description,setdescription]=useState("");
+  const { setCreated ,user,created} = useContext(AppContext);
+  const[src,setsrc]=useState("");
   const navigate=useNavigate();
    const handlea=(e)=>{
     setcreatedBy(e.target.value);
@@ -30,9 +34,14 @@ function Create(){
     axios.post('http://localhost:8244/createsession',data)
     .then(res=>{
       console.log(res.data);
-      const id_session=res.data.post._id;
-      console.log(id_session);
-      navigate('/next',{state:{id_session:id_session}});
+      const name=res.data.post.shortName;
+      console.log(name);
+      // setsrc(res.data.qrcode);
+      const sessionId=res.data.post.shortName;
+      localStorage.setItem("created_session",sessionId);
+      console.log(sessionId);
+      setCreated(sessionId);
+      navigate('/next',{state:{shortName:name}});
     })
     .catch(err=>{
       console.log(err);
@@ -42,7 +51,9 @@ function Create(){
    }
   return (
     <div >
-      <form onSubmit={handleSubmit}  className="form">
+      {created?"you have already created one"
+      :<div>
+        <form onSubmit={handleSubmit}  className="style.main">
         <label>createdby</label>
         <input
           placeholder="name"
@@ -67,10 +78,12 @@ function Create(){
           onChange={handlec} className={style.input}
         />
         <br></br>
-        <button type="submit" className={style.btn}>Signup</button>
-        <br />
-        <Link to="/login" className={style.choice}>Already have a account</Link>
+        <button type="submit" className={style.btn}>Create</button>
       </form>
+      <img src={src}></img>
+      </div>
+      }
+      
     </div>
   );
 }
