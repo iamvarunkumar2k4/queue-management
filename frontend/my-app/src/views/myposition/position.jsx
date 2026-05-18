@@ -5,8 +5,8 @@ import axios from "axios";
 import socket from "../socket";
 import { useContext } from "react";
 import { AppContext } from "../../Appcontext";
+import api from "../../axios";
 function Position(){
-    const location = useLocation();
     const { user, session,setSession} = useContext(AppContext);
     console.log(user+" "+session);
     let [position,setpostion]=useState('loading');
@@ -22,16 +22,14 @@ function Position(){
         shortName:session
       }
       console.log(data);
-      axios.post('http://localhost:8244/myposition',data)
+      api.post('/myposition',data)
         .then(res=>{
-          console.log(res.data);
           setpostion(res.data.position);
         })
         .catch(err=>{
           console.log(err);
         })
         socket.on("data",(data)=>{
-          console.log(data)
           setpostion(data.indexOf(user)+1);
           if(data.indexOf(user)===-1)
           {

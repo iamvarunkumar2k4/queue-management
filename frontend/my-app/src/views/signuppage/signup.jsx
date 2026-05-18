@@ -4,6 +4,7 @@ import axios from 'axios';
 import style from './signup.module.css';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import api from "../../axios";
 function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +13,6 @@ function Signin() {
   const handleName=(e)=>{
     setName(e.target.value);
   }
-
   const handleEmail = (e) => {
     setEmail(e.target.value);
   };
@@ -28,7 +28,7 @@ function Signin() {
       email:email,
       password:password
     }
-    axios.post('http://localhost:8244/signup',data)
+    api.post('/signup',data)
     .then(res=>{
       console.log(res.data);
       navigate('/Login');

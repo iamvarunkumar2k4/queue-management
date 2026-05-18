@@ -8,10 +8,18 @@ import socket from "../socket";
 import { useContext } from "react";
 import { AppContext } from "../../Appcontext";
 import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import api from "../../axios";
 function Join(){
   const [name,setname]=useState("");
   const { setSession ,user,session} = useContext(AppContext);
-
+  const [searchParams] = useSearchParams();
+  useEffect(()=>{
+  const query = searchParams.get("shortName"); 
+  if(query){
+    setname(query);
+  }
+},[])
   const navigate=useNavigate();
    const handleb=(e)=>{
     setname(e.target.value);
@@ -22,7 +30,7 @@ function Join(){
       id_user:user,
       shortName:name
     }
-    axios.post('http://localhost:8244/joinsession',data)
+    api.post('/joinsession',data)
     .then(res=>{
       console.log(res.data);
       const sessionId=res.data.data.shortName;
@@ -30,7 +38,7 @@ function Join(){
       socket.emit("join_session",sessionId);
       console.log(sessionId);
       setSession(sessionId);
-      navigate('/position',{state:{id_user:user,shortName:name}})
+      navigate('/position');
     })
     .catch(err=>{
       console.log(err);

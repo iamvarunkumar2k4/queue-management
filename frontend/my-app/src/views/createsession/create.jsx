@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 import style from './create.module.css';
 import { AppContext } from "../../Appcontext";
 import { useContext } from "react";
-const apiBase = process.env.REACT_APP_API_URL;
+import api from "../../axios";
 function Create(){
   const [createdBy,setcreatedBy]=useState("");
   const [sessionName,setsessionName]=useState("");
   const [description,setdescription]=useState("");
-  const { setCreated ,user,created} = useContext(AppContext);
+  const { setCreated ,user,created,token} = useContext(AppContext);
  
   const navigate=useNavigate();
    const handlea=(e)=>{
@@ -31,7 +31,7 @@ function Create(){
       sessionName:sessionName,
       description:description
     }
-    axios.post(apiBase+'/createsession',data)
+    api.post('/createsession',data)
     .then(res=>{
       console.log(res.data);
       const name=res.data.post.shortName;

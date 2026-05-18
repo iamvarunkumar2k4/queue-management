@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AppContext } from "../../Appcontext";
-
+import api from "../../axios";
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -23,7 +23,7 @@ function Login() {
   const handlePassword = (e) => {
     setPassword(e.target.value);
   };
-  const { setUser } = useContext(AppContext);
+  const { setUser,settoken } = useContext(AppContext);
   const handleSubmit = (e) => {
     e.preventDefault();
     const data={
@@ -31,9 +31,11 @@ function Login() {
       email:email,
       password:password
     }
-    axios.post('http://localhost:8244/signin',data)
+    api.post('/signin',data)
     .then(res=>{
-      localStorage.setItem("token", res.data.token);
+      const token = res.data.token;    
+      localStorage.setItem("token", token); 
+      settoken(token);      
       const userData=res.data.user._id;
       console.log(userData);
       localStorage.setItem("userid",userData);
