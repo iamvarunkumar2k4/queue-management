@@ -1,5 +1,5 @@
 const jwt=require('jsonwebtoken');
-const {JWT_SECRET}=require('../routes/key')
+const JWT_SECRET = process.env.JWT_SECRET;
 const mongoose=require('mongoose');
 const User=mongoose.model('User');
 

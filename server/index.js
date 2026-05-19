@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
   })
 });
 app.set("io", io);
-httpServer.listen(port,()=>{
+httpServer.listen(port || process.env.PORT,()=>{
   console.log("server has started");
 })
 

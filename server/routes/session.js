@@ -3,13 +3,14 @@ const { default: mongoose } = require('mongoose');
 const router=express.Router();
 const Session=mongoose.model("Session")
 const User=mongoose.model('User');
+
 const QRCode = require('qrcode');
 const requireLogin=require('../middleware/requiredLogin');
 const abc=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 
   'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z','A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 
   'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
   
-router.post('/createsession', async (req, res) => {
+router.post('/createsession', requireLogin,async (req, res) => {
   try {
     const { createdBy, sessionName, description } = req.body;
     if (!sessionName || !description || !createdBy) {
@@ -32,16 +33,13 @@ router.post('/createsession', async (req, res) => {
       shortName
     });
     const result = await session.save();
-    const url = 'http://localhost:3000/joinsession?shortName='+shortName;
-    const qrCode = await QRCode.toDataURL(url);
-    console.log(qrCode);
-    res.json({ post: result ,qrcode:qrCode});
+    res.json({ post: result});
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Server error" });
   }
 });
-router.post('/joinsession', async (req, res) => {
+router.post('/joinsession', requireLogin,async (req, res) => {
   try {
     console.log(req.body);
     const { id_user,shortName} = req.body;
@@ -69,8 +67,7 @@ router.post('/joinsession', async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 });
-
-router.post('/next', async (req, res) => {
+router.post('/next', requireLogin,async (req, res) => {
   try {
     const {shortName } = req.body;
 
@@ -86,16 +83,17 @@ router.post('/next', async (req, res) => {
     match.users.shift();
     await match.save();
     const io = req.app.get("io");
+    const url = process.env.FRONTEND_PORT+'/joinsession?shortName='+shortName;
+    const qrCode = await QRCode.toDataURL(url);
     io.to(shortName).emit("data",match.users);
-    return res.status(200).json({ message: "user deleted", data: match });
+    return res.status(200).json({ message: "user deleted", data: match,qrcode:qrCode});
 
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Server error" });
   }
 });
-
-router.post('/myposition',async (req,res)=>{
+router.post('/myposition',requireLogin,async (req,res)=>{
   try {
     const { id_user, shortName } = req.body;
 
@@ -116,23 +114,27 @@ router.post('/myposition',async (req,res)=>{
     return res.status(500).json({ error: "Server error" });
   }
 })
-router.post('/profile',async (req,res)=>{
-  try{
-  const {id_user}=req.body;
-  const match=User.findById(id_user);
-  if(!match)
-  {
-    return res.status(404).json({"message":"no user found"});
-  }
-  else
-  {
-    return res.status(200).send(match);
-  }
-  }
-  catch(err){
-    return res.status(500).json({error:"something went wrong"});
-    console.log(err);
-  }
+router.post('/profile', requireLogin,async (req, res) => {
+  try {
+    const { id_user } = req.body;
 
-})
+    const match = await User.findById(id_user);
+
+    if (!match) {
+      return res.status(404).json({ message: "no user found" });
+    }
+
+    const data = {
+      name: match.name,
+      created: match.created,
+      joined: match.joined
+    };
+
+    return res.status(200).json(data);
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "something went wrong" });
+  }
+});
 module.exports=router;

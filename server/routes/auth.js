@@ -4,7 +4,7 @@ const exprress=require('express');
 const router=exprress.Router();
 const User=mongoose.model('User');
 const jwt=require('jsonwebtoken');
-const {JWT_SECRET}=require('./key');
+const JWT_SECRET = process.env.JWT_SECRET;
 
 
 router.post('/signup',(req,res)=>{
