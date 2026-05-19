@@ -11,7 +11,15 @@ const userschema= new mongoose.Schema({
   password:{
     type:String,
     required:true,
-  }
+  },
+  created:[{
+    type:String
+  }],
+  joined:[
+    {
+      type:String
+    }
+  ]
 }
 );
 
