@@ -34,6 +34,7 @@ function Login() {
     api.post('/signin',data)
     .then(res=>{
       const token = res.data.token;    
+      console.log(res.data.token);
       localStorage.setItem("token", token); 
       settoken(token);      
       const userData=res.data.user._id;
