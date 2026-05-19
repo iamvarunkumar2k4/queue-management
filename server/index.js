@@ -1,13 +1,16 @@
 const express=require('express');
 const app=express();
+const dotenv = require("dotenv");
+dotenv.config();
 const cors = require("cors");
 const {createServer}=require('http');
 app.use(cors());
 const { Server } = require("socket.io");
 const port=8244;
 const mongoose=require('mongoose');  
+console.log("MONGO URI:", process.env.MONGODB_URI);
 
-mongoose.connect('mongodb://localhost:27017/');
+mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on('connected',()=>{
   console.log("database connected succesfully");
 })
@@ -22,7 +25,7 @@ app.use(require('./routes/session'));
 app.use(require('./routes/auth'))
 const io = new Server(httpServer,{
   cors: {
-    origin: "http://localhost:3000", 
+    origin:process.env.FRONTEND_PORT,
     methods: ["GET", "POST"]
   }
 });
@@ -30,8 +33,9 @@ const io = new Server(httpServer,{
 io.on("connection", (socket) => {
   console.log("new user connected");
   console.log("socket id ",socket.id);
-  socket.on('join_session',(id_session)=>{
-    socket.join(id_session);
+  socket.on('join_session',(shortName)=>{
+    socket.join(shortName);
+    console.log("joined session");
   })
 });
 app.set("io", io);
