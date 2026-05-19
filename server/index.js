@@ -6,7 +6,7 @@ const cors = require("cors");
 const {createServer}=require('http');
 app.use(cors());
 const { Server } = require("socket.io");
-const port=8244;
+const PORT = process.env.PORT || 5000;
 const mongoose=require('mongoose');  
 console.log("MONGO URI:", process.env.MONGODB_URI);
 
@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
   })
 });
 app.set("io", io);
-httpServer.listen(port || process.env.PORT,()=>{
+httpServer.listen(PORT,()=>{
   console.log("server has started");
 })
 
