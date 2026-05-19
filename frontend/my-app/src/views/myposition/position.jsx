@@ -33,6 +33,7 @@ function Position(){
           setpostion(data.indexOf(user)+1);
           if(data.indexOf(user)===-1)
           {
+            localStorage.removeItem("joined_session")
             setSession(null);
           }
         })
