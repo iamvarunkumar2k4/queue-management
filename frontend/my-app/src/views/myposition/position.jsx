@@ -1,50 +1,50 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import axios from "axios";
-import socket from "../socket";
-import { useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { AppContext } from "../../Appcontext";
 import api from "../../axios";
-function Position(){
-    const { user, session,setSession} = useContext(AppContext);
-    console.log(user+" "+session);
-    let [position,setpostion]=useState('loading');
-    useEffect(()=>{
-      if(!user && !session)
-      {
-        return;
+import socket from "../socket";
+
+function Position() {
+  const { user, session, setSession } = useContext(AppContext);
+  const [position, setPosition] = useState('loading');
+  useEffect(() => {
+    if (!user || !session) {
+      return;
+    }
+    const data = {
+      id_user: user,
+      shortName: session
+    };
+    api.post('/myposition', data)
+      .then(res => {
+        setPosition(res.data.position);
+      })
+      .catch(err => {
+        console.error("API error:", err);
+      });
+    const handleSocketData = (dataArray) => {
+      const userIndex = dataArray.indexOf(user);
+      if (userIndex === -1) {
+        localStorage.removeItem("joined_session");
+        setSession(null); 
+      } else {
+        setPosition(userIndex + 1);
       }
-      else
-        {
-      const data={
-        id_user:user,
-        shortName:session
-      }
-      console.log(data);
-      api.post('/myposition',data)
-        .then(res=>{
-          setpostion(res.data.position);
-        })
-        .catch(err=>{
-          console.log(err);
-        })
-        socket.on("data",(data)=>{
-          setpostion(data.indexOf(user)+1);
-          if(data.indexOf(user)===-1)
-          {
-            localStorage.removeItem("joined_session")
-            setSession(null);
-          }
-        })
-      }
-    },[user,session])
-    return (
-  <div>
-    {!session
-      ? "No session joined"
-      : `You are currently at ${position}`}
-  </div>
-);
+    };
+
+    socket.on("data", handleSocketData);
+    return () => {
+      socket.off("data", handleSocketData);
+    };
+
+  }, [user, session, setSession]); 
+
+  return (
+    <div>
+      {!session
+        ? "No session joined"
+        : `You are currently at ${position}`}
+    </div>
+  );
 }
+
 export default Position;
