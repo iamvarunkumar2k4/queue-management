@@ -25,7 +25,7 @@ app.use(require('./routes/session'));
 app.use(require('./routes/auth'))
 const io = new Server(httpServer,{
   cors: {
-    origin:process.env.FRONTEND_PORT,
+    origin:process.env.FRONTEND_URL,
     methods: ["GET", "POST"]
   }
 });

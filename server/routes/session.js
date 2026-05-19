@@ -83,7 +83,7 @@ router.post('/next', requireLogin,async (req, res) => {
     match.users.shift();
     await match.save();
     const io = req.app.get("io");
-    const url = process.env.FRONTEND_PORT+'/joinsession?shortName='+shortName;
+    const url = `${process.env.FRONTEND_URL}/joinsession?shortName=${shortName}`;
     const qrCode = await QRCode.toDataURL(url);
     io.to(shortName).emit("data",match.users);
     return res.status(200).json({ message: "user deleted", data: match,qrcode:qrCode});
