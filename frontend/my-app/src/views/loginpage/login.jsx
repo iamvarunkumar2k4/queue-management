@@ -24,32 +24,36 @@ function Login() {
     setPassword(e.target.value);
   };
   const { setUser,settoken } = useContext(AppContext);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const data={
-      name:name,
-      email:email,
-      password:password
-    }
-    api.post('/signin',data)
-    .then(res=>{
-      const token = res.data.token;    
-      console.log(res.data.token);
-      localStorage.setItem("token", token); 
-      settoken(token);      
-      const userData=res.data.user._id;
-      console.log(userData);
-      localStorage.setItem("userid",userData);
-      setUser(userData);
-      navigate('/profile',{replace:true});
-    })
-    .catch(err=>{
-      console.log(err);
-    })
-    console.log("Email:", email);
-    console.log("Password:", password);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  };
+  if (!email || !password) {
+    console.log("Please fill all fields");
+    return;
+  }
+
+  try {
+    const res = await api.post('/signin', {
+      email,
+      password
+    });
+
+    const token = res.data.token;
+    localStorage.setItem("token", token);
+    settoken(token);
+
+    const userId = res.data.user._id;
+    localStorage.setItem("userid", userId);
+    setUser(userId);
+
+    console.log("Login successful:", token);
+
+    navigate('/profile', { replace: true });
+
+  } catch (err) {
+    console.log("Login error:", err.response?.data || err.message);
+  }
+};
 
   return (
     <div className={style.main}>
