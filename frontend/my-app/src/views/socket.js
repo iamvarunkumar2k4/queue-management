@@ -1,4 +1,5 @@
 import { io } from "socket.io-client";
-const socket = io("http://localhost:8244",{
+const apiBase = process.env.REACT_APP_API_URL;
+const socket = io(apiBase,{
 });
 export default socket;
