@@ -1,0 +1,19 @@
+.main{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.left{
+  width: 60vw;
+  height: 100vh;
+}
+.right{
+   width: 30vw;
+  height: 100vh;
+}
+.image{
+  width: 60vw;
+  height: 100vh;
+  overflow: hidden;
+  scroll-behavior: smooth;
+}

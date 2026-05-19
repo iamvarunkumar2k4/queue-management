@@ -2,13 +2,31 @@ import React from "react";
 import './hero.css';
 import thunder from "../../assets/bolt.png";
 import heroImg from "../../assets/hero.png";
+import { useNavigate } from "react-router-dom";
+function Hero() {
+const navigate=useNavigate();
 function joinsession(){
-  
+  let token=localStorage.getItem("token");
+  if(token)
+  {
+    navigate('/joinsession');
+  }
+  else
+  {
+    console.log("first login");
+  }
 }
 function createsession(){
-  
+  let token=localStorage.getItem("token");
+  if(token)
+  {
+    navigate('/createsession');
+  }
+  else
+  {
+    console.log("first login");
+  }
 }
-function Hero() {
   return (
     <div className="hero">
       

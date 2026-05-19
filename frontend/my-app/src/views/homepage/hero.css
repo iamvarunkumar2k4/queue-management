@@ -4,6 +4,9 @@
   justify-content: space-between;
   padding: 50px 80px;
   background: #f9fafc;
+  margin-bottom: 10px;
+  border: 10px solid white;
+  height: 70vh;
 }
 
 /* LEFT SIDE */

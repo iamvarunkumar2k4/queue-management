@@ -1,0 +1,9 @@
+.main{
+  background-color: lightgray;
+  height: 70vh;
+  padding: 30px 60px;
+  margin-bottom: 10px;
+  border: 30px solid white;
+  border-radius: 100px;
+  overflow-y: scroll;
+}

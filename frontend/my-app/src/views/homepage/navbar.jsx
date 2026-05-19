@@ -1,19 +1,18 @@
 import React from "react";
-import './nabar.css';
 import user from '../../assets/user.png';
 import login from '../../';
 import { Link } from "react-router-dom";
-
+import style from './navbar.module.css';
 
 function Navbar() {
   return (
-    <div className="navbar">
-      <div className="logo">
-        <img src={user} alt="logo" />
+    <div className={style.navbar}>
+      <div className={style.logo}>
+        <img src={user} alt={style.logo} />
         <span>QueueEase</span>
       </div>
 
-      <div className="center">
+      <div className={style.center}>
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
         <Link to="/features">Features</Link>
@@ -21,7 +20,7 @@ function Navbar() {
         <Link to="/contacts">Contacts</Link>
       </div>
 
-      <Link to={"/login"}><button className="btn">Get Started</button></Link>
+      <Link to={"/login"}><button className={style.btn}>Get Started</button></Link>
     </div>
   );
 }
