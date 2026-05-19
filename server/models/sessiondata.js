@@ -16,6 +16,10 @@ const sessionschema= new mongoose.Schema({
      type:String,
     required:true
   },
+  shortName:{
+    type:String,
+    required:true
+  },
   users:[
     {
        type: String,
