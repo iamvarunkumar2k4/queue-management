@@ -1,59 +1,46 @@
 import Home from "./views/homepage/home";
-import Login from "./views/loginpage/login.jsx";
-import Signin from "./views/signuppage/signup.jsx";
-
+import Signup from "./views/signuppage/signup.jsx";
+import Signin from './views/signinpage/signin.jsx';
 import { Routes, Route } from "react-router-dom";
-import About from "./views/homepage/about.jsx";
-import Features from "./views/homepage/feature";
-import Contacts from "./views/homepage/contacts";
-import HowItWorks from "./views/homepage/howItWorks";
-import Mainlayout from "./views/mainlayout";
 import Create from "./views/createsession/create.jsx";
 import Join from "./views/joinsession/join.jsx";
 import Position from "./views/myposition/position.jsx";
 import Next from "./views/next/next.jsx";
-import Auth from "./views/Auth.jsx";
-import Content from "./views/Content.jsx";
+import Auth from "./views/Auth/Auth.jsx";
 import Profile from "./views/profile/Profile.jsx";
 import Default from "./views/Default.jsx";
 import { Navigate } from "react-router-dom";
-
+import { ToastContainer } from "react-toastify";
+import Dashboard from "./views/dashboard/Dashboard.jsx";
+import ProtectedRoutes from "./views/Protected.jsx";
+import { useContext } from "react";
+import { AppContext } from "./Appcontext.js";
 function App() {
-  const token=localStorage.getItem("token");
-
+  const {token,loading}=useContext(AppContext);
+  if (loading) return null;
   return (
     <div>
       <Routes>
+        <Route path="/" element={<Home />} />
 
-        <Route element={<Mainlayout />}>
-          <Route path="/" element={token ? <Navigate to="/profile" /> : <Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/contacts" element={<Contacts />} />
-        </Route>
-
-  
         <Route element={<Auth />}>
-          <Route path="/login" element={!token ? <Login /> : <Navigate to="/profile" />} />
-          <Route path="/signup" element={!token ? <Signin /> : <Navigate to="/profile" />} />
+          <Route path="/signin" element={!token ? <Signin /> : <Navigate to="/profile" />} />
+          <Route path="/signup" element={!token ? <Signup /> : <Navigate to="/profile" />} />
         </Route>
 
-        
-        <Route
-          element={token ? <Content /> : <Navigate to="/" />}
-        >
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/createsession" element={<Create />} />
-          <Route path="/joinsession" element={<Join />} />
-          <Route path="/position" element={<Position />} />
-          <Route path="/next" element={<Next />} />
+        <Route element={<ProtectedRoutes token={token} />}>
+          <Route element={<Dashboard></Dashboard>}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/createsession" element={<Create />} />
+            <Route path="/joinsession" element={<Join />} />
+            <Route path="/position" element={<Position />} />
+            <Route path="/next" element={<Next />} />
+          </Route>
         </Route>
-
   
         <Route path="*" element={<Default />} /> 
-
       </Routes>
+      <ToastContainer></ToastContainer>
     </div>
   );
 }

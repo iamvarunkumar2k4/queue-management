@@ -8,21 +8,30 @@ const sessionschema= new mongoose.Schema({
      type:String,
     required:true
   },
-  isActive:{
-    type:Boolean,
-    default:true,
+  createdAt:{
+    type:String
   },
-  description:{
-     type:String,
-    required:true
-  },
-  shortName:{
+  whocanjoin:{
     type:String,
-    required:true
   },
   users:[
     {
-       type: String,
+      user_id:{
+        type:String
+      }
+    }
+  ],
+  pendingusers:[
+    {
+      name:{
+      type:String
+      },
+      user_id:{
+        type: String,
+      },
+      email:{
+        type:String
+      }
     }
   ]
 });

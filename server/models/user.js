@@ -12,13 +12,34 @@ const userschema= new mongoose.Schema({
     type:String,
     required:true,
   },
-  created:[{
+  createdSessions:[
+    { title: { type: String }, createdAt: { type: String } }
+  ],
+  joinedSessions:[
+    { title: { type: String }, joinedAt: { type: String } }
+  ],
+  created:{
+    type:String,
+    default:null
+  },
+  joined:{
+    type:String,
+    default:null
+  },
+  trytojoined:{
+    type:String,
+    default:null
+  },
+  joinedAt:
+  {
     type:String
-  }],
-  joined:[
-    {
-      type:String
-    }
+  },
+  status:{
+    type:String,
+    default:"none"
+  },
+  history:[
+    {item:{type:String}}
   ]
 }
 );

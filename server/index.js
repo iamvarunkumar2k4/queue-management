@@ -6,7 +6,8 @@ const cors = require("cors");
 const {createServer}=require('http');
 app.use(cors());
 const { Server } = require("socket.io");
-const PORT = process.env.PORT || 5000;
+// const PORT = process.env.PORT || 5000;
+const PORT=process.env.PORT;
 const mongoose=require('mongoose');  
 console.log("MONGO URI:", process.env.MONGODB_URI);
 
@@ -33,9 +34,9 @@ const io = new Server(httpServer,{
 io.on("connection", (socket) => {
   console.log("new user connected");
   console.log("socket id ",socket.id);
-  socket.on('join_session',(shortName)=>{
-    socket.join(shortName);
-    console.log("joined session");
+  socket.on('join_session',(session_id)=>{
+    socket.join(session_id);
+    console.log("joined session"+session_id);
   })
 });
 app.set("io", io);

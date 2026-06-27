@@ -1,0 +1,39 @@
+.main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+}
+
+.left {
+  width: 60vw;
+  height: 100%;
+}
+
+.right {
+  width: 40vw;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media screen and (max-width: 768px) {
+  .left {
+    display: none;
+  }
+
+  .right {
+    width: 100vw; 
+    height: 100vh;
+  }
+
+  .main {
+    justify-content: center; 
+  }
+}

@@ -5,39 +5,36 @@ const router=exprress.Router();
 const User=mongoose.model('User');
 const jwt=require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
-
-
-router.post('/signup',(req,res)=>{
+const requireLogin=require('../middleware/requiredLogin');
+router.post('/signup',async(req,res)=>{
+  try{
   const {name,email,password}=req.body;
   if(!email || !password || !name)
   {
     return res.status(422).json({error:"please add all the fields"});
   }
-  User.findOne({email:email}).then((saveduser)=>{
+  const saveduser=await User.findOne({email:email});
     if(saveduser){
       return res.status(422).json({error:"user already existed"});
     }
-    bcrypt.hash(password,12)
-    .then(hashedpassword=>{
-      console.log(hashedpassword);
+    
+    const hashedpassword=await bcrypt.hash(password,12)
+    const date=new Date();
+    console.log(hashedpassword);
         const user=new User({
         email,
         name,
-        password:hashedpassword.toString()
+        password:hashedpassword,
+        joinedAt:date.toLocaleDateString()
       })
-      user.save().then(user=>{
-      return res.json({message:"saved successfully"})
-      })
-      .catch(error=>{
-        console.log(error);
-      })
-    })
-    .catch(error=>{
-      console.log(error);
-      return res.status(500).json({
+      await user.save();
+      return res.status(200).json({message:"saved successfully"});
+  }
+  catch(err){
+    console.log(err);
+    return res.status(500).json({
     error:"Something went wrong"})
-    })
-  })
+  }
 })
 
 router.post('/signin',(req,res)=>{
@@ -56,9 +53,9 @@ router.post('/signin',(req,res)=>{
     .then(domatch=>{
       if(domatch)
       {
-        const token = jwt.sign({_id:saveduser._id}, JWT_SECRET, {expiresIn:'2d'});
+        const token = jwt.sign({_id:saveduser._id}, JWT_SECRET, {expiresIn:'7d'});
         const {_id,name,email}=saveduser;
-        return res.json({ token,user:{_id,name,email}});
+        return res.status(200).json({ token,user:{_id,name,email}});
       }
       else
       {
@@ -72,5 +69,33 @@ router.post('/signin',(req,res)=>{
     })
   })
 })
+router.post('/deleteaccount',requireLogin,async(req,res)=>{
+  try{
+    const user_id=req.user._id;
+    const { password } = req.body;
+    if (!password) {
+      console.log("Password is required");
+      return res.status(400).json({ error: "Password is required" });
+
+    }
+    const user = await User.findById(user_id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      console.log("Invalid password");
+      return res.status(400).json({ error: "Invalid password" });
+    }
+    await User.findByIdAndDelete(user_id);
+    await Document.deleteMany({ owner: user_id });
+    return res.status(200).json({message:"Account deleted successfully"});
+  } catch (err) {
+    console.log("Error occurred while deleting account");
+    return res.status(500).json({
+      error:"Something went wrong"
+    });
+  }
+});
 
 module.exports=router;

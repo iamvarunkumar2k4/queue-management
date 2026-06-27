@@ -1,39 +1,36 @@
-import React from "react";
-import './hero.css';
+import React, { useContext } from "react";
+import style from './hero.module.css';
 import thunder from "../../assets/bolt.png";
 import heroImg from "../../assets/hero.png";
 import { useNavigate } from "react-router-dom";
+import {toast} from 'react-toastify';
+import { AppContext } from "../../Appcontext";
 function Hero() {
-const navigate=useNavigate();
-function joinsession(){
-  let token=localStorage.getItem("token");
-  if(token)
-  {
-    navigate('/joinsession');
+  const navigate=useNavigate();
+  const {token}=useContext(AppContext);
+  const joinsession=()=>{
+    if(token){
+      navigate('/joinsession');
+    }
+    else{
+      toast.error("first signin");
+    }
   }
-  else
-  {
-    console.log("first login");
-  }
-}
-function createsession(){
-  let token=localStorage.getItem("token");
-  if(token)
+const createsession=()=>{if(token)
   {
     navigate('/createsession');
   }
-  else
-  {
-    console.log("first login");
+  else{
+    toast.error("first signin");
   }
 }
   return (
-    <div className="hero">
+    <div className={style.hero}>
       
       {/* LEFT CONTENT */}
-      <div className="hero-text">
+      <div className={style.herotext}>
         
-        <div className="badge">
+        <div className={style.badge}>
           <img src={thunder} alt="icon" width={15}/>
           <span>Smart Queue Management</span>
         </div>
@@ -41,7 +38,7 @@ function createsession(){
         <h1>
           Manage Queues <br />
           Smarter, <br />
-          <span className="highlight">Not Harder</span>
+          <span className={style.highlight}>Not Harder</span>
         </h1>
 
         <p>
@@ -49,18 +46,18 @@ function createsession(){
           No more chaos, long waits, or manual calling.
         </p>
 
-        <div className="buttons">
-          <button className="primary" onClick={createsession}>
-            Create Session →
+        <div className={style.buttons}>
+          <button className={style.primary} onClick={createsession}>
+            Create Session
           </button>
-          <button className="secondary" onClick={joinsession}>
+          <button className={style.secondary} onClick={joinsession}>
             Join Session
           </button>
         </div>
       </div>
 
       {/* RIGHT IMAGE */}
-      <div className="hero-image">
+      <div className={style.heroimage}>
         <img src={heroImg} alt="hero" />
       </div>
 

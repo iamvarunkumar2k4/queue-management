@@ -2,16 +2,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 50px 80px;
+  padding: 20px 20px;
   background: #f9fafc;
   margin-bottom: 10px;
-  border: 10px solid white;
-  height: 70vh;
+  border: 1px solid white;
+  height: 90vh;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  margin: 20px;
 }
 
 /* LEFT SIDE */
-.hero-text {
-  max-width: 520px;
+.herotext {
+  width: 50%;
+  height: 90%;
+  overflow: hidden;
 }
 
 /* Badge */
@@ -28,7 +33,7 @@
 }
 
 /* Heading */
-.hero-text h1 {
+.herotext h1 {
   font-size: 48px;
   font-weight: 700;
   line-height: 1.2;
@@ -41,7 +46,7 @@
 }
 
 /* Paragraph */
-.hero-text p {
+.herotext p {
   font-size: 16px;
   color: #6b7280;
   margin-bottom: 30px;
@@ -77,18 +82,34 @@
 }
 
 /* Image */
-.hero-image img {
-  width: 550px;
+.heroimage{
+  width: 50%;
+}
+.heroimage img {
+  width: 100%;
   margin-top: 20px;
+  overflow: hidden;
 }
 
 /* Hover effects */
 .primary:hover {
   background: #5b4ee9;
-  scale: 1.1;
 }
 
 .secondary:hover {
   background: whitesmoke;
-  scale: 1.1;
+}
+
+@media screen and (max-width: 768px) {
+  .heroimage{
+    display: none;
+  }
+  .herotext{
+    width: 100%;
+  }
+  .herotext{
+    justify-content: center;
+    margin-bottom: 20px;
+    overflow: scroll;
+  }
 }
