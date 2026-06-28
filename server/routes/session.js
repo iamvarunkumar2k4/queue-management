@@ -178,6 +178,10 @@ router.post('/joinsession', requireLogin,async (req, res) => {
     }
     else
     {
+      if(user.history.length>6)
+      {
+        user.history.pop();
+      }
       user.history.push({item:session_id});
       if(match.whocanjoin==="Anyone")
       {

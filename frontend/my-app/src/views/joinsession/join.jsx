@@ -85,7 +85,7 @@ function Join(){
           }}
         />
           <button type="submit" className={style.btn}>Join</button>
-        {display && (
+        {(display && history.length!==0) && (
         <>
         <p>recent joined sessions</p>
         <div className={style.recentsearch}>
