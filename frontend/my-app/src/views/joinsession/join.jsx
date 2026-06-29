@@ -5,11 +5,13 @@ import style from './join.module.css';
 import socket from "../socket";
 import api from "../../axios";
 import {toast} from 'react-toastify';
+import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AppContext } from "../../Appcontext";
 function Join(){
   const [session_id,setsession_id]=useState("");
+  const [searchParams] = useSearchParams();
   const [status,setstatus]=useState("none");
   const [history,sethistory]=useState([]);
   const [display,setdisplay]=useState(false);
@@ -23,6 +25,7 @@ function Join(){
       const res=await api.get('/statusvalue');
       setstatus(res.data.status);
       sethistory(res.data.history);
+      setsession_id(searchParams.get("session_id"));
       console.log(res.data.history);
     }
     fetch();

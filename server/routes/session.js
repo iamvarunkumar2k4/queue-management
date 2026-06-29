@@ -421,7 +421,7 @@ router.get('/getqr',requireLogin,async(req,res)=>{
   try{
     const user_id=req.user._id;
     const session_id=(await User.findById(user_id)).created;
-    const url = `${process.env.FRONTEND_URL}/joinsession?shortName=${session_id}`;
+    const url = `${process.env.FRONTEND_URL}/joinsession?session_id=${session_id}`;
     const qrCode = await QRCode.toDataURL(url);
     return res.status(200).json({qrcode:qrCode});
   } catch (err) {
