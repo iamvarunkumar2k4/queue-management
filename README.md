@@ -185,7 +185,3 @@ This project is licensed under the ISC License - see the LICENSE file for detail
 ## 👨‍💻 Author
 
 Created by Varun Kumar
-
----
-
-**Note**: Make sure MongoDB is running and all environment variables are properly configured before starting the application.
