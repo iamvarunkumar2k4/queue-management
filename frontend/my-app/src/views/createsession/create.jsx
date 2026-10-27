@@ -7,13 +7,10 @@ import socket from "../socket";
 import { AppContext } from "../../Appcontext";
 function Create() {
   const [sessionName, setsessionName] = useState("");
-  // 1. Change "whocanjoin" to state so React remembers the choice
   const [whocanjoin, setWhocanjoin] = useState(""); 
-  // 2. Initialize as actual boolean false, not a string
   const [view, setview] = useState(false); 
   const {setcreatedsession,createdsession}=useContext(AppContext);
   const navigate = useNavigate();
-
   const handleb = (e) => {
     setsessionName(e.target.value);
   };
@@ -23,8 +20,6 @@ function Create() {
       try {
         const res = await api.get('/cancreate');
         console.log(res);
-        // Assuming res.message is a boolean (true if they can't create, false if they can)
-        // Or adapt this depending on what your backend actually returns
         setview(res.data.message); 
         console.log(view);
       } catch (err) {
@@ -33,7 +28,7 @@ function Create() {
     };
     fetchCanCreate();
     if(createdsession) socket.emit("join_session",createdsession);
-  },[view]);
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();

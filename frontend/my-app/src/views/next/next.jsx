@@ -12,6 +12,7 @@ function Next(){
   const [view,setview]=useState(false);
   const [display,setdisplay]=useState(false);
   const[src,setsrc]=useState("");
+  const [code,setcode]=useState("");
   const [total,settotal]=useState("loading");
   const navigate=useNavigate();
   const [name,setname]=useState("loading");
@@ -69,8 +70,9 @@ function Next(){
   const getqr=async()=>{
     try{
       const res=await api.get('/getqr');
-    setsrc(res.data.qrcode);
-    setdisplay(true);
+      setsrc(res.data.qrcode);
+      setcode(res.data.code);
+      setdisplay(true);
     }
     catch(err){
       console.log(err);
@@ -123,15 +125,20 @@ function Next(){
       {
         display?
         <div>
-          <img src={src} className={style.img} alt="qr"></img>
           <button onClick={()=>{setdisplay(false)}} className={style.btn}>Hide</button>
+          <br></br>
+          <img src={src} className={style.img} alt="qr"></img>
+          <h4>session code: {code}</h4>
         </div>
-          :<button type="button" onClick={getqr} className={style.btn}>Get QR</button>
+          :
+          <div>
+            <button type="button" onClick={getqr} className={style.btn}>Get QR</button>
+          </div>
       }
-      <h3>current users in the session {total}</h3>
-      <h2>Current User</h2>
-      <h2>{name}</h2>
-      <h2>{email}</h2>
+      <h3>No. of users in the session {total}</h3>
+      <h2>last User</h2>
+      <h2>Name : {name}</h2>
+      <h2>Email : {email}</h2>
       <button type="button" onClick={handleDelete} className={style.btn}>delete</button>
       <h2>pending users</h2>
       <div className={style.pending}>

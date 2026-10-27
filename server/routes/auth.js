@@ -20,7 +20,7 @@ router.post('/signup',async(req,res)=>{
     
     const hashedpassword=await bcrypt.hash(password,12)
     const date=new Date();
-    console.log(hashedpassword);
+    // console.log(hashedpassword);
         const user=new User({
         email,
         name,

@@ -46,7 +46,7 @@ function Position() {
       socket.off("data", handleSocketData);
       socket.off("message", handleMessage);
     };
-  },[user]);
+  });
   const handleClick=async()=>{
     try{
     const res=await api.post('/goback');
